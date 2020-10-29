@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-2">
     <button
       class="btn btn-success d-flex align-items-center shadow"
       data-toggle="modal"
@@ -9,6 +9,7 @@
       <span>Add campaigns</span>
     </button>
     <div
+      ref="modal"
       class="modal fade"
       id="add-campaigns-modal"
       tabindex="-1"
@@ -37,6 +38,7 @@
               >
                 <div class="custom-control custom-checkbox">
                   <input
+                    title=""
                     type="checkbox"
                     :checked="selectedCampaignIds.indexOf(campaign.id) !== -1"
                     class="custom-control-input"
@@ -79,6 +81,7 @@ export default {
   components: { IconPlus },
   data: function() {
     return {
+      modal: undefined,
       campaigns: [],
       selectedCampaignIds: []
     };
@@ -90,6 +93,10 @@ export default {
     }
   },
   methods: {
+    /**
+     *
+     * @param campaign
+     */
     toggleCampaign: function(campaign) {
       const { selectedCampaignIds } = this;
 
@@ -103,13 +110,36 @@ export default {
 
       this.selectedCampaignIds = Object.values(selectedCampaignIds);
     },
-    addCampaigns: function() {
-      const { selectedCampaigns } = this;
-      console.log("selectedCampaigns", selectedCampaigns);
+    /**
+     *
+     * @returns {Promise<void>}
+     */
+    addCampaigns: async function() {
+      this.$store.commit("setTemporaryCampaigns", this.selectedCampaigns);
+
+      for (const selectedCampaign of this.selectedCampaigns) {
+        this.$store.dispatch("addCampaign", selectedCampaign).then(data => {
+          this.handleCampaignsResponse(selectedCampaign, data);
+        });
+      }
+
+      this.modal.hide();
+    },
+    /**
+     * TODO
+     * @param selectedCampaign
+     * @param createdCampaign
+     */
+    handleCampaignsResponse: function(selectedCampaign, createdCampaign) {
+      //TODO
+      console.log(selectedCampaign, createdCampaign);
     }
   },
   created: async function() {
     this.campaigns = await this.$store.dispatch("getCampaigns");
+  },
+  mounted: function() {
+    this.modal = new this.$bootstrap.Modal(this.$refs.modal);
   },
   beforeDestroy: function() {
     document.body.classList.remove("modal-open");

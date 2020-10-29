@@ -18,15 +18,23 @@
       </div>
     </td>
     <td>
-      <span class="badge badge-success">Success</span>
+      <span class="badge bg-success m-1">Sync Succeeded</span>
+      <span class="badge bg-danger m-1">Sync Failed</span>
     </td>
     <td>
       <button
-        @click="removeCampaign"
-        class="btn btn-danger shadow"
+        @click="reSyncCampaign"
+        class="btn btn-outline shadow m-1"
         title="Remove Campaign"
       >
-        <IconTrash />
+        <IconRepeat /> re-sync
+      </button>
+      <button
+        @click="removeCampaign"
+        class="btn btn-danger shadow m-1"
+        title="Remove Campaign"
+      >
+        <IconTrash /> Remove
       </button>
     </td>
   </tr>
@@ -34,10 +42,11 @@
 
 <script>
 import IconTrash from "@/assets/icons/icon-trash.svg";
+import IconRepeat from "@/assets/icons/icon-repeat.svg";
 
 export default {
   name: "CampaignTableRow",
-  components: { IconTrash },
+  components: { IconTrash, IconRepeat },
   props: {
     campaign: {
       type: Object,
@@ -67,10 +76,22 @@ export default {
     }
   },
   methods: {
+    /**
+     * TODO
+     */
     removeCampaign: function() {
       const { id } = this.entity;
       alert("Removed #" + id);
     },
+    /**
+     * TODO
+     */
+    reSyncCampaign: function() {},
+    /**
+     *
+     * @param originalLocation
+     * @returns {string|string}
+     */
     getLocation: function(originalLocation) {
       const { locationType, count } = originalLocation;
       return locationType && count
@@ -80,5 +101,3 @@ export default {
   }
 };
 </script>
-
-<style scoped></style>

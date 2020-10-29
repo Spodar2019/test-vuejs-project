@@ -4,10 +4,12 @@ import router from "./router";
 import store from "./store";
 
 import CommonMixin from "@/mixins/common.mixin";
-
-import "bootstrap/dist/js/bootstrap.bundle";
+import bootstrap from "bootstrap/dist/js/bootstrap.min";
 
 Vue.config.productionTip = false;
+
+// use bootstrap
+Vue.prototype.$bootstrap = bootstrap;
 
 // common mixin
 Vue.mixin(CommonMixin);

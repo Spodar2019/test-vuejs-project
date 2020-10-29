@@ -6,9 +6,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    apiEndpoint: "http://localhost:8080/api_endpoints"
+    apiEndpoint: "http://localhost:8080/api_endpoints",
+    temporaryCampaigns: []
   },
-  mutations: {},
+  getters: {
+    getTemporaryCampaigns: state => state.temporaryCampaigns
+  },
+  mutations: {
+    setTemporaryCampaigns: (state, payload) =>
+      (state.temporaryCampaigns = payload)
+  },
   actions: {
     /**
      * get campaigns /AutomationEntity/GetByAutomationId
@@ -46,6 +53,34 @@ export default new Vuex.Store({
           .then(response => {
             const { adsets } = response.data;
             resolve(adsets || []);
+          })
+          .catch(async error => {
+            await dispatch("handleErrors", error);
+            reject();
+          });
+      });
+    },
+    /**
+     * get campaign entity /AutomationEntity/GetEntityBreakdown
+     * @param state
+     * @param dispatch
+     * @param campaign
+     * @returns {Promise<unknown>}
+     */
+    addCampaign: function({ state, dispatch }, campaign) {
+      return new Promise((resolve, reject) => {
+        Axios.get(
+          state.apiEndpoint +
+            "/AutomationEntity-GetEntityBreakdown-316-response-body.json",
+          {
+            data: campaign
+          }
+        )
+          .then(response => {
+            setTimeout(() => {
+              // api delay
+              resolve(response.data);
+            }, 2000);
           })
           .catch(async error => {
             await dispatch("handleErrors", error);
